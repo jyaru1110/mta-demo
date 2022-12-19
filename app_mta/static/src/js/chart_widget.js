@@ -18,10 +18,24 @@ var ChartWidget = AbstractField.extend({
         var data_a =[];
         var data_r = [];
         var data_q = [];
+        var data_s = [];
         var canvas = this.$('.canvas')[0]
         var ctx = canvas.getContext("2d");
         localStorage.product_id = value;
         var enlace = "/get_buffer_changes/"+value.toString();
+        var enlace_sale  = "/get_sales/"+value.toString();
+        console.log(enlace_sale,'no')
+        ajax.jsonRpc(enlace_sale,'call',{},{
+            'async':false
+        }).then(function (data) {
+            data.forEach(element=>{
+                const fecha = new Date(element.date);
+                data_s.push({x:fecha,y:element.qty});
+                console.log(element);
+            })
+        }
+        )
+        
         ajax.jsonRpc(enlace, 'call', {}, {
             'async': false
         }).then(function (data) {
@@ -45,11 +59,6 @@ var ChartWidget = AbstractField.extend({
             data_q.push({x:hoy,y:data[data.length-1].qty_available});
             localStorage.buffer_size = data[data.length-1].buffer_size;
             
-            console.log("V",data_v);
-            console.log("A",data_a);
-            console.log("R",data_r);
-            console.log("Q",data_q);
-            
             
             const myChart = new Chart(ctx, {
                     type: 'line',
@@ -61,6 +70,13 @@ var ChartWidget = AbstractField.extend({
                             label:'Quantity On Hand',
                             data:data_q,
                             borderColor:'black',
+                            tension:0.1,
+                        },
+                        {
+                            stepped: true,
+                            label:'Sales',
+                            data:data_s,
+                            borderColor:'blue',
                             tension:0.1,
                         },
                         {

@@ -16,7 +16,7 @@ class StockMove(models.Model):
     
     def write(self,values):
         override_write = super(StockMove,self).write(values)
-        if self._origin.state=="done":
+        if self._origin.state=="done" and self._origin.reference[0:6]=='WH/IN/':
             producto = self.env['mta.producto'].search([('product_tmpl_id','=',self._origin.product_id.id)])
             oc_actual = producto.oc
             if oc_actual - self._origin.product_uom_qty < 0:
