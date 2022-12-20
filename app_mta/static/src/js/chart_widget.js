@@ -24,17 +24,14 @@ var ChartWidget = AbstractField.extend({
         localStorage.product_id = value;
         var enlace = "/get_buffer_changes/"+value.toString();
         var enlace_sale  = "/get_sales/"+value.toString();
-        console.log(enlace_sale,'no')
         ajax.jsonRpc(enlace_sale,'call',{},{
             'async':false
         }).then(function (data) {
             data.forEach(element=>{
                 const fecha = new Date(element.date);
                 data_s.push({x:fecha,y:element.qty});
-                console.log(element);
             })
-        }
-        )
+        })
         
         ajax.jsonRpc(enlace, 'call', {}, {
             'async': false
@@ -73,10 +70,9 @@ var ChartWidget = AbstractField.extend({
                             tension:0.1,
                         },
                         {
-                            stepped: true,
                             label:'Sales',
                             data:data_s,
-                            borderColor:'blue',
+                            borderColor:'rgb(38,105,205)',
                             tension:0.1,
                         },
                         {
