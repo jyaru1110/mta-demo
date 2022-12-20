@@ -10,22 +10,21 @@ from_zone = tz.gettz('UTC')
 to_zone = tz.gettz('UTC-6')
 
 class GetSales(http.Controller):
-    @http.route(['/get_sales/<int:product_id>'],type='json',auth='public',website=True)
+    @http.route(['/get_sales/<int:producto_id>'],type='json',auth='public',website=True)
     
-    def get_sales(self,product_id):
-        product = http.request.env['mta.producto'].sudo().search([('product_tmpl_id','=',product_id)])
-        sales = http.request.env['sale.order.line'].sudo().search([('product_id','=',product.id)])
-        bc = []
+    def get_sales(self,producto_id):
+        product = http.request.env['mta.producto'].sudo().search([('id','=',producto_id)])
+        sales = http.request.env['sale.order.line'].sudo().search([('product_id','=',product.product_tmpl_id.id)])
+        s = []
         for sale in sales:
-            utc = sales.__last_update
+            utc = sale.write_date
             utc = utc.replace(tzinfo=from_zone)
             cst = utc.astimezone(to_zone)
             n={
-                "id" : sale.product_id,
                 "date" : cst,
                 "qty" : sale.product_uom_qty
             }
-            bc.append(n)
-        return bc
+            s.append(n)
+        return s
             
         
