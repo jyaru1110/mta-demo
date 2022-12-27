@@ -48,13 +48,16 @@ class MtaProducto(models.Model):
             actual_estado = record.estado
             if(record.qty_available>=2*record.buffer_size/3):
                 record.estado = 1
+                record.contador_r = 0
             elif record.qty_available >=record.buffer_size/3:
                 record.estado = 2
-            else:
-                record.estado = 3
-            if (actual_estado!=record.estado and record.estado == 2):
                 record.contador_v = 0
                 record.contador_r = 0
+            else:
+                record.estado = 3
+                record.contador_v = 0
+            if(record.contador_r == 0 and record.contador_v == 0):
+                record.alerta = 'N/A'
     
         
         
