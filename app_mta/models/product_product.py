@@ -10,8 +10,8 @@ class ProductProduct(models.Model):
     loteOptimo = fields.Integer(string="Lote óptimo")
     qty_transit = fields.Integer(string="# transito")
     buffer_size = fields.Integer(string="Buffer Size",default=1)
-    contador_v = fields.Integer(string="Contador de verde")
-    contador_r = fields.Integer(string="Contador de rojo")
+    contador_v = fields.Float(string="Contador de verde")
+    contador_r = fields.Float(string="Contador de rojo")
     recomendacion = fields.Selection(string="Recomendación",default="nr", selection=[('ibs','Incrementar buffer size'),('dbs','Reducir buffer_size'),('nr','Buffer no requiere ser ajustado')])
     alerta = fields.Selection(string="Status del buffer",selection=[('DV','DV'),('DR','DR'),('N/A','N/A')], default="N/A")
     

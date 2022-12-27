@@ -10,8 +10,8 @@ class ProductProduct(models.Model):
     loteOptimo = fields.Integer(string="Lote óptimo")
     qty_transit = fields.Integer(string="# transito")
     buffer_size = fields.Integer(string="Buffer Size",default=1)
-    contador_v = fields.Integer(string="Contador de verde")
-    contador_r = fields.Integer(string="Contador de rojo")
+    contador_v = fields.Float(string="Contador de verde")
+    contador_r = fields.Float(string="Contador de rojo")
     recomendacion = fields.Selection(string="Recomendación",default="nr", selection=[('ibs','Incrementar buffer size'),('dbs','Reducir buffer_size'),('nr','Buffer no requiere ser ajustado')])
     alerta = fields.Selection(string="Status del buffer",selection=[('DV','DV'),('DR','DR'),('N/A','N/A')], default="N/A")
     
@@ -23,12 +23,10 @@ class ProductProduct(models.Model):
     
     def write(self,values):
         # your logic goes here
-        print('aki si entre jiji')
         actual_buffer_size = self._origin.buffer_size
         actual_qty_available = self._origin.qty_available
         if 'buffer_size' in values:
             if(values['buffer_size']!=actual_buffer_size):
-                print("sí setee contadores a 0 jiji")
                 values['contador_v'] = 0
                 values['contador_r'] = 0
                 values['alerta'] = 'N/A'
@@ -38,7 +36,6 @@ class ProductProduct(models.Model):
                     self.env['changes.time'].create({'product_id':producto_mta.id,'buffer_size':values['buffer_size'],'qty_available':actual_qty_available,'type':'buffer'})
         if 'qty_available' in values:
             if values['qty_available']!=actual_qty_available:
-                print('sí entro a crear changes in time')
                 producto_mta = self.env['mta.producto'].search([('product_tmpl_id','=',self._origin.id)])
                 if producto_mta:
                     self.env['changes.time'].create({'product_id':producto_mta.id,'qty_available':values['qty_available'],'buffer_size':actual_buffer_size,'type':'available'})
