@@ -33,7 +33,7 @@ class MtaProducto(models.Model):
         
         return override_create
         
-    @api.depends('buffer_size','qty_transit','qty_available', 'estado', 'contador_v', 'contador_r')
+    @api.depends('buffer_size','qty_transit','qty_available', 'estado', 'contador_v', 'contador_r','alerta')
     def _compute_bp_transito(self):
        for record in self:
             record.bp_transito = ((record.buffer_size-record.qty_available-record.qty_transit)/(record.buffer_size))*100
@@ -45,7 +45,6 @@ class MtaProducto(models.Model):
             record.bp_sitio = ((record.buffer_size-record.qty_available)/(record.buffer_size))*100
     def _compute_estado(self):
         for record in self:
-            actual_estado = record.estado
             if(record.qty_available>=2*record.buffer_size/3):
                 record.estado = 1
                 record.contador_r = 0
@@ -56,7 +55,7 @@ class MtaProducto(models.Model):
             else:
                 record.estado = 3
                 record.contador_v = 0
-            if(record.contador_r == 0 and record.contador_v == 0):
+            if (record.contador_r == 0 and record.contador_v == 0):
                 record.alerta = 'N/A'
     
         
@@ -69,7 +68,7 @@ class MtaProducto(models.Model):
             contador = False
             product = self.env['mta.producto'].browse(producto['id'])
             if producto.estado == 1:
-                product.contador_v =product.contador_v + (product.qty_available-2*product.buffer_size/3)/(product.buffer_size/3)
+                product.contador_v =product.contador_v + (producto.qty_available-2*producto.buffer_size/3)/(producto.buffer_size/3)
                 product.contador_r = 0
                    
             elif producto.estado == 3:
