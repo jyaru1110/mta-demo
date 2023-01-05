@@ -18,11 +18,11 @@ class ProductProduct(models.Model):
     @api.depends('recomendacion')
     def _compute_recomendacion(self):
         for record in self:
-            if(record.qty_available>=2*record.buffer_size/3 and recomendacion == 'dbs'):
+            if(record.qty_available>=2*record.buffer_size/3 and record.recomendacion == 'dbs'):
                 record.recomendacion = 'nr'
             elif record.qty_available >=record.buffer_size/3:
                 record.recomendacion = 'nr'
-            elif record.qty_available <=record.buffer_size/3 and recomendacion == 'ibs':
+            elif record.qty_available <=record.buffer_size/3 and record.recomendacion == 'ibs':
                 record.recomendacion = 'nr'
     
     
