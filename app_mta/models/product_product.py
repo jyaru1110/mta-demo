@@ -11,8 +11,8 @@ class ProductProduct(models.Model):
     qty_transit = fields.Integer(string="# transito")
     buffer_size = fields.Integer(string="Buffer Size",default=1)
     contador_v = fields.Float(string="Contador de verde")
-    contador_r = fields.Float(string="Contador de rojo", compute='_compute_recomendacion')
-    recomendacion = fields.Selection(string="Recomendación",default="nr", selection=[('ibs','Incrementar buffer size'),('dbs','Reducir buffer_size'),('nr','Buffer no requiere ser ajustado')])
+    contador_r = fields.Float(string="Contador de rojo")
+    recomendacion = fields.Selection(string="Recomendación",default="nr", selection=[('ibs','Incrementar buffer size'),('dbs','Reducir buffer_size'),('nr','Buffer no requiere ser ajustado')], compute='_compute_recomendacion')
     alerta = fields.Selection(string="Status del buffer",selection=[('DV','DV'),('DR','DR'),('N/A','N/A')], default="N/A")
     
     @api.depends('recomendacion')
